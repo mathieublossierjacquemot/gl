@@ -93,6 +93,7 @@ public class GLRenderer2bIndices implements GLSurfaceView.Renderer{
                 (FLOATS_PER_POSITION + FLOATS_PER_COLOR) * BYTES_PER_FLOAT,
                 FLOATS_PER_POSITION * BYTES_PER_FLOAT);
 
+
         // openGL selects indices buffer
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, indexID);
         // send data to openGL (to indices buffer)

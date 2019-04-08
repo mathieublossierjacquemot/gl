@@ -172,4 +172,5 @@ public class GLRenderer4aProjectionMatrix implements GLSurfaceView.Renderer{
         GLES20.glDisableVertexAttribArray(ATTRIBUTE_POSITION);
         GLES20.glDisableVertexAttribArray(ATTRIBUTE_COLOR);
     }
+
 }

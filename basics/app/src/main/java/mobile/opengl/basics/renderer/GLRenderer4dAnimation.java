@@ -231,5 +231,4 @@ public class GLRenderer4dAnimation implements GLSurfaceView.Renderer{
         GLES20.glDisableVertexAttribArray(ATTRIBUTE_COLOR);
     }
 
-
 }
