@@ -11,7 +11,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import mobile.opengl.basics.util.Util;
 
-public class GLRenderer1WhiteTriangle implements GLSurfaceView.Renderer{
+public class GLRenderer1RedTriangle implements GLSurfaceView.Renderer{
 
     private Util util;
 
@@ -23,7 +23,7 @@ public class GLRenderer1WhiteTriangle implements GLSurfaceView.Renderer{
     private int shaderProgram;
     private int vertexID;
 
-    public GLRenderer1WhiteTriangle(Util util) {
+    public GLRenderer1RedTriangle(Util util) {
         this.util = util;
     }
 

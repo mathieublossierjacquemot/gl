@@ -15,7 +15,7 @@ import mobile.opengl.basics.R;
 public class MainActivity extends AppCompatActivity {
 
     private final static String[] SAMPLE_NAMES = {
-            "1 - White Triangle",
+            "1 - Red Triangle",
             "2a - Colors",
             "2b - Indices",
             "3a - Rectangles",
