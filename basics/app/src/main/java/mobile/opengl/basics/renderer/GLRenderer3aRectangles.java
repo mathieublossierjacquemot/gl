@@ -35,7 +35,7 @@ public class GLRenderer3aRectangles implements GLSurfaceView.Renderer{
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         // clear color (frame background color)
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         // Shader program: vertex shader, fragment shader
         shaderProgram = GLES20.glCreateProgram();
@@ -66,10 +66,10 @@ public class GLRenderer3aRectangles implements GLSurfaceView.Renderer{
                 -0.2f,  0.8f,  0.0f, 0.0f, 1.0f, 1.0f,
                 -0.6f,  0.8f,  0.0f, 0.0f, 1.0f, 1.0f,
 
-                -0.8f,  0.2f,  1.0f, 1.0f, 1.0f, 1.0f,
-                 0.8f,  0.2f,  1.0f, 1.0f, 1.0f, 1.0f,
-                 0.8f,  0.6f,  1.0f, 1.0f, 1.0f, 1.0f,
-                -0.8f,  0.6f,  1.0f, 1.0f, 1.0f, 1.0f
+                -0.8f,  0.2f,  0.5f, 0.5f, 0.5f, 1.0f,
+                 0.8f,  0.2f,  0.5f, 0.5f, 0.5f, 1.0f,
+                 0.8f,  0.6f,  0.5f, 0.5f, 0.5f, 1.0f,
+                -0.8f,  0.6f,  0.5f, 0.5f, 0.5f, 1.0f
 
         };
         FloatBuffer verticesBuffer = FloatBuffer.wrap(vertices);
@@ -78,10 +78,13 @@ public class GLRenderer3aRectangles implements GLSurfaceView.Renderer{
         short[] indices = {
                 0, 1, 2,
                 0, 2, 3,
+
                 4, 5, 6,
                 4, 6, 7,
+
                 8, 9, 10,
                 8, 10, 11,
+
                 12, 13, 14,
                 12, 14, 15
         };

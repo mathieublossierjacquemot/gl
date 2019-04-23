@@ -51,7 +51,7 @@ public class GLRenderer4dAnimation implements GLSurfaceView.Renderer{
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         // clear color (frame background color)
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         GLES20.glClearDepthf(1.0f);
         GLES20.glDepthFunc(GLES20.GL_LEQUAL);
 
@@ -88,11 +88,10 @@ public class GLRenderer4dAnimation implements GLSurfaceView.Renderer{
                 -0.2f,  0.8f, -z,  0.0f, 0.0f, 1.0f, 1.0f,
                 -0.6f,  0.8f, -z,  0.0f, 0.0f, 1.0f, 1.0f,
 
-                -0.8f,  0.2f,  z,  1.0f, 1.0f, 1.0f, 1.0f,
-                 0.8f,  0.2f, -z,  1.0f, 1.0f, 1.0f, 1.0f,
-                 0.8f,  0.6f, -z,  1.0f, 1.0f, 1.0f, 1.0f,
-                -0.8f,  0.6f,  z,  1.0f, 1.0f, 1.0f, 1.0f
-
+                -0.8f,  0.2f,  z,  0.5f, 0.5f, 0.5f, 1.0f,
+                 0.8f,  0.2f, -z,  0.5f, 0.5f, 0.5f, 1.0f,
+                 0.8f,  0.6f, -z,  0.5f, 0.5f, 0.5f, 1.0f,
+                -0.8f,  0.6f,  z,  0.5f, 0.5f, 0.5f, 1.0f
         };
         FloatBuffer verticesBuffer = FloatBuffer.wrap(vertices);
 
@@ -100,10 +99,13 @@ public class GLRenderer4dAnimation implements GLSurfaceView.Renderer{
         short[] indices = {
                 0, 1, 2,
                 0, 2, 3,
+
                 4, 5, 6,
                 4, 6, 7,
+
                 8, 9, 10,
                 8, 10, 11,
+
                 12, 13, 14,
                 12, 14, 15
         };

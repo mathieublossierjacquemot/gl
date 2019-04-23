@@ -35,7 +35,7 @@ public class GLRenderer3bRectanglesDepth implements GLSurfaceView.Renderer{
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         // clear color (frame background color)
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         GLES20.glClearDepthf(0.0f);
         GLES20.glDepthFunc(GLES20.GL_GEQUAL);
 
@@ -68,11 +68,10 @@ public class GLRenderer3bRectanglesDepth implements GLSurfaceView.Renderer{
                 -0.2f,  0.8f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f,
                 -0.6f,  0.8f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f,
 
-                -0.8f,  0.2f, 1.0f,  1.0f, 1.0f, 1.0f, 1.0f,
-                 0.8f,  0.2f, 0.0f,  1.0f, 1.0f, 1.0f, 1.0f,
-                 0.8f,  0.6f, 0.0f,  1.0f, 1.0f, 1.0f, 1.0f,
-                -0.8f,  0.6f, 1.0f,  1.0f, 1.0f, 1.0f, 1.0f
-
+                -0.8f,  0.2f, 1.0f,  0.5f, 0.5f, 0.5f, 1.0f,
+                 0.8f,  0.2f, 0.0f,  0.5f, 0.5f, 0.5f, 1.0f,
+                 0.8f,  0.6f, 0.0f,  0.5f, 0.5f, 0.5f, 1.0f,
+                -0.8f,  0.6f, 1.0f,  0.5f, 0.5f, 0.5f, 1.0f
         };
         FloatBuffer verticesBuffer = FloatBuffer.wrap(vertices);
 
@@ -80,10 +79,13 @@ public class GLRenderer3bRectanglesDepth implements GLSurfaceView.Renderer{
         short[] indices = {
                 0, 1, 2,
                 0, 2, 3,
-                4, 5, 6,
-                4, 6, 7,
-                8, 9, 10,
-                8, 10, 11,
+
+//                4, 5, 6,
+//                4, 6, 7,
+//
+//                8, 9, 10,
+//                8, 10, 11,
+
                 12, 13, 14,
                 12, 14, 15
         };
@@ -150,7 +152,7 @@ public class GLRenderer3bRectanglesDepth implements GLSurfaceView.Renderer{
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, indexID);
 
         // draw triangles
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, 24,
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, 12,
                 GLES20.GL_UNSIGNED_SHORT, 0);
 
         // disable attributes
