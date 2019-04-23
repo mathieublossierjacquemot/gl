@@ -40,8 +40,8 @@ public class GLRenderer4aProjectionMatrix implements GLSurfaceView.Renderer{
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         // clear color (frame background color)
         GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        GLES20.glClearDepthf(1.0f);
-        GLES20.glDepthFunc(GLES20.GL_LEQUAL);
+        GLES20.glClearDepthf(-1.0f);
+        GLES20.glDepthFunc(GLES20.GL_GEQUAL);
 
         // Shader program: vertex shader, fragment shader
         shaderProgram = GLES20.glCreateProgram();
@@ -142,7 +142,7 @@ public class GLRenderer4aProjectionMatrix implements GLSurfaceView.Renderer{
         Util.setMatrix(projectionMatrix,
                 1.0f, 0.0f, 0.0f, 0.0f,
                 0.0f, (float) width / height, 0.0f, 0.0f,
-                0.0f, 0.0f, -1.0f, 0.0f,
+                0.0f, 0.0f, 1.0f, 0.0f,
                 0.0f, 0.0f, 0.0f, 1.0f
         );
     }
