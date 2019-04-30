@@ -141,13 +141,35 @@ public class GLRenderer4bViewMatrix implements GLSurfaceView.Renderer{
                 GLES20.GL_STATIC_DRAW);
 
         // view matrix
+
+        // translation
         Util.setMatrix(viewMatrix,
-                0.5f, 0.0f, 0.0f, 0.0f,
-                0.0f, 0.5f, 0.0f, 0.0f,
-                0.0f, 0.0f, 0.5f, 0.0f,
+                1.0f, 0.0f, 0.0f,  1.0f,
+                0.0f, 1.0f, 0.0f, 0.0f,
+                0.0f, 0.0f, 1.0f, 0.0f,
                 0.0f, 0.0f, 0.0f, 1.0f
         );
 
+//        // dilation
+//        float s = 0.1f;
+//        Util.setMatrix(viewMatrix,
+//                s, 0.0f, 0.0f, 0.0f,
+//                0.0f, s, 0.0f, 0.0f,
+//                0.0f, 0.0f, s, 0.0f,
+//                0.0f, 0.0f, 0.0f, 1.0f
+//        );
+
+
+//        // rotation around z axis
+//        double a = Math.PI / 4;
+//        float c = (float) Math.cos(a);
+//        float s = (float) Math.sin(a);
+//        Util.setMatrix(viewMatrix,
+//                c, -s, 0.0f, 0.0f,
+//                s, c, 0.0f, 0.0f,
+//                0.0f, 0.0f, 1.0f, 0.0f,
+//                0.0f, 0.0f, 0.0f, 1.0f
+//        );
     }
 
     @Override
@@ -159,7 +181,6 @@ public class GLRenderer4bViewMatrix implements GLSurfaceView.Renderer{
                 0.0f, 0.0f, 0.0f, 1.0f
         );
         Matrix.multiplyMM(vpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
-
     }
 
     @Override

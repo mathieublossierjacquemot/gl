@@ -193,7 +193,7 @@ public class GLRenderer4dAnimation implements GLSurfaceView.Renderer{
         // select indices buffer
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, indexID);
 
-        // setMatrix model matrix and model-view-projection matrix
+        // set model matrix (rotation and translation) and model-view-projection matrix
         float c = (float) Math.cos(angle);
         float s = (float) Math.sin(angle);
         Util.setMatrix(modelMatrix,
@@ -204,7 +204,7 @@ public class GLRenderer4dAnimation implements GLSurfaceView.Renderer{
         );
         Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, modelMatrix, 0);
 
-        // setMatrix openGL matrix
+        // set openGL matrix
         GLES20.glUniformMatrix4fv(uniformLocationMatrix, 1, false, mvpMatrix, 0);
 
         // draw triangles
@@ -212,7 +212,8 @@ public class GLRenderer4dAnimation implements GLSurfaceView.Renderer{
                 GLES20.GL_UNSIGNED_SHORT, 0);
 
 
-        // setMatrix model matrix and model-view-projection matrix
+        // set model matrix (rotation around y axis and translation) and model-view-projection
+        // matrix
         Util.setMatrix(modelMatrix,
                 c, 0.0f, -s, 0.0f,
                 0.0f, 1.0f, 0.0f, 2.0f,
@@ -221,7 +222,7 @@ public class GLRenderer4dAnimation implements GLSurfaceView.Renderer{
         );
         Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, modelMatrix, 0);
 
-        // setMatrix openGL matrix
+        // set openGL matrix
         GLES20.glUniformMatrix4fv(uniformLocationMatrix, 1, false, mvpMatrix, 0);
 
         // draw triangles
