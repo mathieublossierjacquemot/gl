@@ -1,7 +1,11 @@
 package mobile.opengl.textures;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.opengl.GLUtils;
 import android.opengl.Matrix;
 
 import java.nio.FloatBuffer;
@@ -11,19 +15,26 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class GLRenderer implements GLSurfaceView.Renderer{
-    private Util util;
+    final private Context context;
+    final private Util util;
 
     private static final int BYTES_PER_FLOAT = 4;
     private static final int BYTES_PER_SHORT = 2;
 
     private static final int ATTRIBUTE_POSITION = 0;
     private static final int ATTRIBUTE_COLOR = 1;
+    private static final int ATTRIBUTE_TEXTURE = 2;
     private static final int FLOATS_PER_POSITION = 3;
     private static final int FLOATS_PER_COLOR = 4;
+    private static final int FLOATS_PER_TEXTURE = 2;
 
     private int shaderProgram;
     private int vertexID;
     private int indexID;
+
+    private int textureID;
+    private int uniformLocationTexture0;
+    private static final int TEXTURE_SAMPLER_0 = 0;
 
     private int uniformLocationMatrix;
     private float[] projectionMatrix;
@@ -39,8 +50,9 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 
     private static final float ANGLE_FACTOR = 2 * ((float) Math.PI) / 180f;
 
-    public GLRenderer(Util util) {
-        this.util = util;
+    public GLRenderer(Context context) {
+        this.context = context;
+        this.util = new Util(context);
         projectionMatrix = new float[16];
         rotYMatrix = new float[16];
         rotXMatrix = new float[16];
@@ -63,35 +75,37 @@ public class GLRenderer implements GLSurfaceView.Renderer{
         // inputs location
         GLES20.glBindAttribLocation(shaderProgram, ATTRIBUTE_POSITION, "vPosition");
         GLES20.glBindAttribLocation(shaderProgram, ATTRIBUTE_COLOR, "vColor");
+        GLES20.glBindAttribLocation(shaderProgram, ATTRIBUTE_TEXTURE, "vTexture");
 
         // link program
         GLES20.glLinkProgram(shaderProgram);
 
         // get uniforms locations
         uniformLocationMatrix = GLES20.glGetUniformLocation(shaderProgram, "uMatrix");
+        uniformLocationTexture0 = GLES20.glGetUniformLocation(shaderProgram, "uTexture0");
 
-        // vertices to render: values are x, y, z,  r, g, b, a
+        // vertices to render: values are x, y, z,  r, g, b, a,  tx, ty
         float z = 0.1f;
         float[] vertices = {
-                0.2f, -0.8f, -z,  1.0f, 0.0f, 0.0f, 1.0f,
-                0.6f, -0.8f, -z,  1.0f, 0.0f, 0.0f, 1.0f,
-                0.6f,  0.8f,  z,  1.0f, 0.0f, 0.0f, 1.0f,
-                0.2f,  0.8f,  z,  1.0f, 0.0f, 0.0f, 1.0f,
+                0.2f, -0.8f, -z,  1.0f, 0.0f, 0.0f, 1.0f,  0.0f,  0.0f,
+                0.6f, -0.8f, -z,  1.0f, 0.0f, 0.0f, 1.0f,  0.25f, 0.0f,
+                0.6f,  0.8f,  z,  1.0f, 0.0f, 0.0f, 1.0f,  0.25f, 1.0f,
+                0.2f,  0.8f,  z,  1.0f, 0.0f, 0.0f, 1.0f,  0.0f,  1.0f,
 
-                -0.8f, -0.6f, -z,  0.0f, 1.0f, 0.0f, 1.0f,
-                0.8f, -0.6f,  z,  0.0f, 1.0f, 0.0f, 1.0f,
-                0.8f, -0.2f,  z,  0.0f, 1.0f, 0.0f, 1.0f,
-                -0.8f, -0.2f, -z,  0.0f, 1.0f, 0.0f, 1.0f,
+                -0.8f, -0.6f, -z,  0.0f, 1.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+                 0.8f, -0.6f,  z,  0.0f, 1.0f, 0.0f, 1.0f,  1.0f, 0.0f,
+                 0.8f, -0.2f,  z,  0.0f, 1.0f, 0.0f, 1.0f,  1.0f, 0.25f,
+                -0.8f, -0.2f, -z,  0.0f, 1.0f, 0.0f, 1.0f,  0.0f, 0.25f,
 
-                -0.6f, -0.8f,  z,  0.0f, 0.0f, 1.0f, 1.0f,
-                -0.2f, -0.8f,  z,  0.0f, 0.0f, 1.0f, 1.0f,
-                -0.2f,  0.8f, -z,  0.0f, 0.0f, 1.0f, 1.0f,
-                -0.6f,  0.8f, -z,  0.0f, 0.0f, 1.0f, 1.0f,
+                -0.6f, -0.8f,  z,  0.0f, 0.0f, 1.0f, 1.0f,  0.0f,  0.0f,
+                -0.2f, -0.8f,  z,  0.0f, 0.0f, 1.0f, 1.0f,  0.25f, 0.0f,
+                -0.2f,  0.8f, -z,  0.0f, 0.0f, 1.0f, 1.0f,  0.25f, 1.0f,
+                -0.6f,  0.8f, -z,  0.0f, 0.0f, 1.0f, 1.0f,  0.0f,  1.0f,
 
-                -0.8f,  0.2f,  z,  0.5f, 0.5f, 0.5f, 1.0f,
-                0.8f,  0.2f, -z,  0.5f, 0.5f, 0.5f, 1.0f,
-                0.8f,  0.6f, -z,  0.5f, 0.5f, 0.5f, 1.0f,
-                -0.8f,  0.6f,  z,  0.5f, 0.5f, 0.5f, 1.0f
+                -0.8f,  0.2f,  z,  0.5f, 0.5f, 0.5f, 1.0f,  0.0f, 0.0f,
+                 0.8f,  0.2f, -z,  0.5f, 0.5f, 0.5f, 1.0f,  1.0f, 0.0f,
+                 0.8f,  0.6f, -z,  0.5f, 0.5f, 0.5f, 1.0f,  1.0f, 0.25f,
+                -0.8f,  0.6f,  z,  0.5f, 0.5f, 0.5f, 1.0f,  0.0f, 0.25f,
         };
         FloatBuffer verticesBuffer = FloatBuffer.wrap(vertices);
 
@@ -124,20 +138,28 @@ public class GLRenderer implements GLSurfaceView.Renderer{
                 vertices.length * BYTES_PER_FLOAT,
                 verticesBuffer, GLES20.GL_STATIC_DRAW);
         // set attribute to find the data at the right place
+        int stride = (FLOATS_PER_POSITION + FLOATS_PER_COLOR + FLOATS_PER_TEXTURE) * BYTES_PER_FLOAT;
         GLES20.glVertexAttribPointer(
                 ATTRIBUTE_POSITION,
                 FLOATS_PER_POSITION,
                 GLES20.GL_FLOAT,
                 false,
-                (FLOATS_PER_POSITION + FLOATS_PER_COLOR) * BYTES_PER_FLOAT,
+                stride,
                 0);
         GLES20.glVertexAttribPointer(
                 ATTRIBUTE_COLOR,
                 FLOATS_PER_COLOR,
                 GLES20.GL_FLOAT,
                 false,
-                (FLOATS_PER_POSITION + FLOATS_PER_COLOR) * BYTES_PER_FLOAT,
+                stride,
                 FLOATS_PER_POSITION * BYTES_PER_FLOAT);
+        GLES20.glVertexAttribPointer(
+                ATTRIBUTE_TEXTURE,
+                FLOATS_PER_TEXTURE,
+                GLES20.GL_FLOAT,
+                false,
+                stride,
+                (FLOATS_PER_POSITION + FLOATS_PER_COLOR) * BYTES_PER_FLOAT);
 
 
         // openGL selects indices buffer
@@ -152,6 +174,15 @@ public class GLRenderer implements GLSurfaceView.Renderer{
         angleY = 0f;
         angleX = 0f;
         updateViewMatrix();
+
+        // texture
+        textureID = loadTexture(context, R.drawable.stone);
+
+        // blending
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA,
+                GLES20.GL_ONE_MINUS_SRC_ALPHA);
+        GLES20.glEnable(GLES20.GL_BLEND);
+
     }
 
     @Override
@@ -178,12 +209,20 @@ public class GLRenderer implements GLSurfaceView.Renderer{
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vertexID);
         GLES20.glEnableVertexAttribArray(ATTRIBUTE_POSITION);
         GLES20.glEnableVertexAttribArray(ATTRIBUTE_COLOR);
+        GLES20.glEnableVertexAttribArray(ATTRIBUTE_TEXTURE);
 
         // select indices buffer
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, indexID);
 
         // set openGL matrix
         GLES20.glUniformMatrix4fv(uniformLocationMatrix, 1, false, vpMatrix, 0);
+
+        // Set the active texture unit to texture unit 0.
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        // Bind the texture to this unit.
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureID);
+        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+        GLES20.glUniform1i(uniformLocationTexture0, TEXTURE_SAMPLER_0);
 
         // draw triangles
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, 24,
@@ -192,6 +231,45 @@ public class GLRenderer implements GLSurfaceView.Renderer{
         // disable attributes
         GLES20.glDisableVertexAttribArray(ATTRIBUTE_POSITION);
         GLES20.glDisableVertexAttribArray(ATTRIBUTE_COLOR);
+        GLES20.glDisableVertexAttribArray(ATTRIBUTE_TEXTURE);
+    }
+
+
+
+    public static int loadTexture(final Context context, final int resourceId) {
+        final int[] textureHandle = new int[1];
+
+        GLES20.glGenTextures(1, textureHandle, 0);
+
+        if (textureHandle[0] != 0) {
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inScaled = false;   // No pre-scaling
+
+            // Read in the resource
+            final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
+                    resourceId, options);
+
+            // Bind to the texture in OpenGL
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
+
+            // Set filtering
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER,
+                    GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER,
+                    GLES20.GL_LINEAR);
+
+            // Load the bitmap into the bound texture.
+            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+
+            // Recycle the bitmap, since its data has been loaded into OpenGL.
+            bitmap.recycle();
+        }
+
+        if (textureHandle[0] == 0) {
+            throw new RuntimeException("Error loading texture.");
+        }
+
+        return textureHandle[0];
     }
 
     private void updateViewMatrix() {
@@ -221,8 +299,6 @@ public class GLRenderer implements GLSurfaceView.Renderer{
     }
 
     private void updateVPMatrix() {
-
-        // update VP matrix
         Matrix.multiplyMM(vpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
     }
 

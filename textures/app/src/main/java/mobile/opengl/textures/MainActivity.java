@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         mGLView = findViewById(R.id.glview);
         // request an OpenGL ES 2.0 compatible context
         mGLView.setEGLContextClientVersion(2);
-        GLRenderer glRenderer = new GLRenderer(new Util(this));
+        GLRenderer glRenderer = new GLRenderer(this);
         mGLView.setRenderer(glRenderer);
 
         // simple UI
