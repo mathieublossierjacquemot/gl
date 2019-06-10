@@ -1,6 +1,7 @@
 package mobile.opengl.basics.renderer;
 
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
@@ -13,7 +14,7 @@ import mobile.opengl.basics.util.Util;
 
 public class GLRenderer1RedTriangle implements GLSurfaceView.Renderer{
 
-    private Util util;
+    private Context context;
 
     private static final int BYTES_PER_FLOAT = 4;
 
@@ -23,8 +24,8 @@ public class GLRenderer1RedTriangle implements GLSurfaceView.Renderer{
     private int shaderProgram;
     private int vertexID;
 
-    public GLRenderer1RedTriangle(Util util) {
-        this.util = util;
+    public GLRenderer1RedTriangle(Context context) {
+        this.context = context;
     }
 
     @Override
@@ -34,8 +35,8 @@ public class GLRenderer1RedTriangle implements GLSurfaceView.Renderer{
 
         // Shader program: vertex shader, fragment shader
         shaderProgram = GLES20.glCreateProgram();
-        util.loadShader("simple_vertex_shader.c", GLES20.GL_VERTEX_SHADER, shaderProgram);
-        util.loadShader("simple_fragment_shader.c", GLES20.GL_FRAGMENT_SHADER, shaderProgram);
+        Util.loadShader(context,"simple_vertex_shader.c", GLES20.GL_VERTEX_SHADER, shaderProgram);
+        Util.loadShader(context,"simple_fragment_shader.c", GLES20.GL_FRAGMENT_SHADER, shaderProgram);
         
         // inputs location
         GLES20.glBindAttribLocation(shaderProgram, ATTRIBUTE_POSITION, "vPosition");

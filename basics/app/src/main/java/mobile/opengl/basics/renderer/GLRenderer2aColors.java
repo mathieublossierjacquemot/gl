@@ -1,6 +1,7 @@
 package mobile.opengl.basics.renderer;
 
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
@@ -13,7 +14,7 @@ import mobile.opengl.basics.util.Util;
 
 public class GLRenderer2aColors implements GLSurfaceView.Renderer{
 
-    private Util util;
+    private Context context;
 
     private static final int BYTES_PER_FLOAT = 4;
 
@@ -25,8 +26,8 @@ public class GLRenderer2aColors implements GLSurfaceView.Renderer{
     private int shaderProgram;
     private int vertexID;
 
-    public GLRenderer2aColors(Util util) {
-        this.util = util;
+    public GLRenderer2aColors(Context context) {
+        this.context = context;
     }
 
     @Override
@@ -36,8 +37,8 @@ public class GLRenderer2aColors implements GLSurfaceView.Renderer{
 
         // Shader program: vertex shader, fragment shader
         shaderProgram = GLES20.glCreateProgram();
-        util.loadShader("colors_vertex_shader.c", GLES20.GL_VERTEX_SHADER, shaderProgram);
-        util.loadShader("colors_fragment_shader.c", GLES20.GL_FRAGMENT_SHADER, shaderProgram);
+        Util.loadShader(context,"colors_vertex_shader.c", GLES20.GL_VERTEX_SHADER, shaderProgram);
+        Util.loadShader(context,"colors_fragment_shader.c", GLES20.GL_FRAGMENT_SHADER, shaderProgram);
 
         // inputs location
         GLES20.glBindAttribLocation(shaderProgram, ATTRIBUTE_POSITION, "vPosition");

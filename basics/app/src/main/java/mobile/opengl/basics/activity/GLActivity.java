@@ -1,5 +1,6 @@
 package mobile.opengl.basics.activity;
 
+import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -54,8 +55,8 @@ public class GLActivity extends AppCompatActivity {
         GLSurfaceView.Renderer renderer = null;
         try {
             Class<?> clazz = Class.forName("mobile.opengl.basics.renderer.GLRenderer"+sampleName);
-            Constructor<?> constructor = clazz.getConstructor(Util.class);
-            renderer = (GLSurfaceView.Renderer) constructor.newInstance(new Util(this));
+            Constructor<?> constructor = clazz.getConstructor(Context.class);
+            renderer = (GLSurfaceView.Renderer) constructor.newInstance(this);
         } catch (Exception e) {
             e.printStackTrace();
         }

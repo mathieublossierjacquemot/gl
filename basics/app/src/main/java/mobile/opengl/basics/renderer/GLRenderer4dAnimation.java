@@ -1,6 +1,7 @@
 package mobile.opengl.basics.renderer;
 
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -15,7 +16,7 @@ import mobile.opengl.basics.util.Util;
 
 public class GLRenderer4dAnimation implements GLSurfaceView.Renderer{
 
-    private Util util;
+    private Context context;
 
     private static final int BYTES_PER_FLOAT = 4;
     private static final int BYTES_PER_SHORT = 2;
@@ -39,8 +40,8 @@ public class GLRenderer4dAnimation implements GLSurfaceView.Renderer{
     private double angle;
     private long tStart;
 
-    public GLRenderer4dAnimation(Util util) {
-        this.util = util;
+    public GLRenderer4dAnimation(Context context) {
+        this.context = context;
         projectionMatrix = new float[16];
         viewMatrix = new float[16];
         vpMatrix = new float[16];
@@ -57,8 +58,8 @@ public class GLRenderer4dAnimation implements GLSurfaceView.Renderer{
 
         // Shader program: vertex shader, fragment shader
         shaderProgram = GLES20.glCreateProgram();
-        util.loadShader("matrix_vertex_shader.c", GLES20.GL_VERTEX_SHADER, shaderProgram);
-        util.loadShader("colors_fragment_shader.c", GLES20.GL_FRAGMENT_SHADER, shaderProgram);
+        Util.loadShader(context,"matrix_vertex_shader.c", GLES20.GL_VERTEX_SHADER, shaderProgram);
+        Util.loadShader(context,"colors_fragment_shader.c", GLES20.GL_FRAGMENT_SHADER, shaderProgram);
 
         // inputs location
         GLES20.glBindAttribLocation(shaderProgram, ATTRIBUTE_POSITION, "vPosition");
