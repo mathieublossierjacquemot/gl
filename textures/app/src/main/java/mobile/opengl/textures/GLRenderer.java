@@ -16,7 +16,6 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class GLRenderer implements GLSurfaceView.Renderer{
     final private Context context;
-    final private Util util;
 
     private static final int BYTES_PER_FLOAT = 4;
     private static final int BYTES_PER_SHORT = 2;
@@ -52,7 +51,6 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 
     public GLRenderer(Context context) {
         this.context = context;
-        this.util = new Util(context);
         projectionMatrix = new float[16];
         rotYMatrix = new float[16];
         rotXMatrix = new float[16];
@@ -69,8 +67,8 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 
         // Shader program: vertex shader, fragment shader
         shaderProgram = GLES20.glCreateProgram();
-        util.loadShader("vertex_shader.c", GLES20.GL_VERTEX_SHADER, shaderProgram);
-        util.loadShader("fragment_shader.c", GLES20.GL_FRAGMENT_SHADER, shaderProgram);
+        Util.loadShader(context,"vertex_shader.c", GLES20.GL_VERTEX_SHADER, shaderProgram);
+        Util.loadShader(context,"fragment_shader.c", GLES20.GL_FRAGMENT_SHADER, shaderProgram);
 
         // inputs location
         GLES20.glBindAttribLocation(shaderProgram, ATTRIBUTE_POSITION, "vPosition");

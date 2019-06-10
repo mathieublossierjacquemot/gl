@@ -11,13 +11,7 @@ import java.io.InputStreamReader;
 
 public class Util {
 
-    private Context context;
-
-    public Util(Context context) {
-        this.context = context;
-    }
-
-    public void loadShader(String name, int type, int program) {
+    static public void loadShader(Context context, String name, int type, int program) {
         AssetManager assetManager = context.getAssets();
         try {
             InputStream inputStream = assetManager.open(name);
