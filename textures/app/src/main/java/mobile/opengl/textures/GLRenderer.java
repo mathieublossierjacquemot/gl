@@ -37,23 +37,12 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 
     private int uniformLocationMatrix;
     private float[] projectionMatrix;
-    private float[] rotYMatrix;
-    private float[] rotXMatrix;
     private float[] viewMatrix;
     private float[] vpMatrix;
-
-    private float angleY;
-    private float angleYOld;
-    private float angleX;
-    private float angleXOld;
-
-    private static final float ANGLE_FACTOR = 2 * ((float) Math.PI) / 180f;
 
     public GLRenderer(Context context) {
         this.context = context;
         projectionMatrix = new float[16];
-        rotYMatrix = new float[16];
-        rotXMatrix = new float[16];
         viewMatrix = new float[16];
         vpMatrix = new float[16];
     }
@@ -169,9 +158,12 @@ public class GLRenderer implements GLSurfaceView.Renderer{
                 GLES20.GL_STATIC_DRAW);
 
         // view matrix
-        angleY = 0f;
-        angleX = 0f;
-        updateViewMatrix();
+        Util.setMatrix(viewMatrix,
+                1.0f, 0.0f, 0.0f, 0.0f,
+                0.0f, 1.0f, 0.0f, 0.0f,
+                0.0f, 0.0f, 1.0f, 0.0f,
+                0.0f, 0.0f, 0.0f, 1.0f
+        );
 
         // texture
         textureID = loadTexture(context, R.drawable.stone);
@@ -270,47 +262,12 @@ public class GLRenderer implements GLSurfaceView.Renderer{
         return textureHandle[0];
     }
 
-    private void updateViewMatrix() {
-        // rotation around y axis
-        float c = (float) Math.cos(angleY);
-        float s = (float) Math.sin(angleY);
-        Util.setMatrix(rotYMatrix,
-                c, 0.0f, s, 0.0f,
-                0.0f, 1.0f, 0.0f, 0.0f,
-                -s, 0.0f, c, 0.0f,
-                0.0f, 0.0f, 0.0f, 1.0f
-        );
-
-        // rotation around x axis
-        c = (float) Math.cos(angleX);
-        s = (float) Math.sin(angleX);
-        Util.setMatrix(rotXMatrix,
-                1.0f, 0.0f, 0.0f, 0.0f,
-                0.0f, c, -s, 0.0f,
-                0.0f, s, c, 0.0f,
-                0.0f, 0.0f, 0.0f, 1.0f
-        );
-
-        // update view matrix
-        Matrix.multiplyMM(viewMatrix, 0, rotXMatrix, 0, rotYMatrix, 0);
-
+    public float[] getViewMatrix() {
+        return viewMatrix;
     }
 
-    private void updateVPMatrix() {
+    public void updateVPMatrix() {
         Matrix.multiplyMM(vpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
-    }
-
-
-    public void onActionDown() {
-        angleYOld = angleY;
-        angleXOld = angleX;
-    }
-
-    public void onActionMove(float dx, float dy) {
-        angleY = angleYOld + dx * ANGLE_FACTOR;
-        angleX = angleXOld + dy * ANGLE_FACTOR;
-        updateViewMatrix();
-        updateVPMatrix();
     }
 
 }
